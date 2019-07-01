@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>全台空氣指標儀表板</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC:400,700|Open+Sans:400,700&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+  </head>
+  <body>
+
+    <div class="container" id="app">
+
+      <div class="header">
+        <div class="title">
+          <h1>空氣品質指標 (AQI)</h1>
+          <select class="selectCity" v-model="selectedCity">
+            <option value="" selected disabled>請選擇地區</option>
+            <option value="基隆市">基隆市</option>
+            <option value="臺北市">臺北市</option>
+            <option value="新北市">新北市</option>
+            <option value="桃園市">桃園市</option>
+            <option value="新竹縣">新竹縣</option>
+            <option value="新竹市">新竹市</option>
+            <option value="苗栗縣">苗栗縣</option>
+            <option value="臺中市">臺中市</option>
+            <option value="彰化縣">彰化縣</option>
+            <option value="南投市">南投市</option>
+            <option value="雲林縣">雲林縣</option>
+            <option value="嘉義市">嘉義市</option>
+            <option value="嘉義縣">嘉義縣</option>
+            <option value="臺南市">臺南市</option>
+            <option value="高雄市">高雄市</option>
+            <option value="屏東縣">屏東縣</option>
+            <option value="宜蘭縣">宜蘭縣</option>
+            <option value="花蓮縣">花蓮縣</option>
+            <option value="臺東縣">臺東縣</option>
+            <option value="澎湖縣">澎湖縣</option>
+            <option value="金門縣">金門縣</option>
+            <option value="連江縣">連江縣</option>
+          </select>
+        </div>
+
+
+        <div class="pollution-color-table">
+          <table>
+            <tr>
+              <th class="less50">0~50</th>
+              <th class="less100">51~100</th>
+              <th class="less150">101~150</th>
+              <th class="less200">151~200</th>
+              <th class="less300">201~300</th>
+              <th class="less400">301~400</th>
+            </tr>
+            <tr>
+              <td>良好</td>
+              <td>普通</td>
+              <td>對敏感族群不健康</td>
+              <td>對所有族群不健康</td>
+              <td>非常不健康</td>
+              <td>危害</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h1>{{ currentCity }}</h1>
+          <div class="line"></div>
+          <p>{{ currentMainSiteData.PublishTime }} 更新</p>
+        </div>
+
+
+
+        <div class="panel-content" v-show="currentCityData.length > 0">
+          <div class="main-site">
+            <div class="site-box">
+              <div class="name">{{ currentMainSiteData.SiteName }}</div>
+              <div class="aqi" :class=[getAqiColor(currentMainSiteData.AQI)]>{{ currentMainSiteData.AQI }}</div>
+            </div>
+
+            <div class="detail">
+              <div class="detail-content">
+                <div>臭氧 <small>O<sub>3</sub>(ppb)</small></div>
+                <span>{{ currentMainSiteData.O3 }}</span>
+              </div>
+
+              <div class="detail-content">
+                <div>懸浮微粒 <small>PM<sub>10</sub>(ug/m<sup>3</sup>)</small></div>
+                <span>{{ currentMainSiteData.PM10 }}</span>
+              </div>
+
+              <div class="detail-content">
+                <div>細懸浮微粒 <small>PM<sub>2.5</sub>(ug/m<sup>3</sup>)</small></div>
+                <span>{{ currentMainSiteData['PM2.5'] }}</span>
+              </div>
+
+              <div class="detail-content">
+                <div>一氧化碳 <small>CO(ppm)</small></div>
+                <span>{{ currentMainSiteData.CO }}</span>
+              </div>
+
+              <div class="detail-content">
+                <div>二氧化硫 <small>SO<sub>2</sub>(ppb)</small></div>
+                <span>{{ currentMainSiteData.SO2 }}</span>
+              </div>
+
+              <div class="detail-content">
+                <div>二氧化氮 <small>NO<sub>2</sub>(ppb)</small></div>
+                <span>{{ currentMainSiteData.NO2 }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sub">
+            <div class="site-box" v-for="site in currentCityData">
+              <div class="name" @click="changeMainSite">{{ site.SiteName }}</div>
+              <div class="aqi" :class=[getAqiColor(site.AQI)]>{{ site.AQI }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+    <footer>
+      <p>資料來源 : 行政院環境保護署</p>
+      <p>Copyright © 2019 HexSchool. All rights reserved.</p>
+    </footer>
+
+
+    <script src="index.js" charset="utf-8"></script>
+  </body>
+</html>
